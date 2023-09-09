@@ -1,5 +1,5 @@
 # Obligatorio2DSS
-
+‘ or 1=1 --
 @
 ```
 public static boolean isValidUser(String user, String password) throws SQLException {
