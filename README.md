@@ -1,31 +1,20 @@
-  try { %>
+try { %>
 	                <%
 	                 String text = "";
-	                 String command = "";
-					 String shell = "";
-					 String shellarg = "";
 					 
-	                 if(System.getProperty("os.name").toLowerCase().contains("windows"))
-	                 {
-	                	 shell = "cmd";
-	                	 shellarg = "/c";
-	                	 command = "type \"" + path + "\\" + content + "\"";
-	                 }
-	                 else
-	                 {
-	                	 shell = "bash";
-	                	 shellarg = "-c";
-	                	 command = "cat '" + path + "/" + content +"'";
-	                 }
-
-	                 Process proc = Runtime.getRuntime().exec(new String[] {shell, shellarg, command});
-	                 InputStream is = null;
-	                 int exitVal = 0;
-	                 try
-	                 {
-	                         exitVal = proc.exitValue();
-	                 }
-	                 catch(Exception e){}
+					 String osName = System.getProperty("os.name").toLowerCase();
+					 ProcessBuilder builder = new ProcessBuilder();
+					 
+					 if (osName.contains("windows")) {
+						 builder.command("cmd.exe", "/c", "type", path + "\\" + content);
+					 } else {
+						 builder.command("bash", "-c", "cat", path + "/" + content);
+					 }
+					 
+					 Process proc = builder.start();
+					 
+					 InputStream is = null;
+	                 int exitVal = proc.waitFor();
 
 	                 if(exitVal != 0)
 	                 {
