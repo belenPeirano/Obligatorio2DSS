@@ -1,40 +1,44 @@
-# Obligatorio2DSS
-‘ or 1=1 --
-@
-```
-public static boolean isValidUser(String user, String password) throws SQLException {
-    if (user == null || password == null || user.trim().length() == 0 || password.trim().length() == 0)
-        return false;
+  try { %>
+	                <%
+	                 String text = "";
+	                 String command = "";
+					 String shell = "";
+					 String shellarg = "";
+					 
+	                 if(System.getProperty("os.name").toLowerCase().contains("windows"))
+	                 {
+	                	 shell = "cmd";
+	                	 shellarg = "/c";
+	                	 command = "type \"" + path + "\\" + content + "\"";
+	                 }
+	                 else
+	                 {
+	                	 shell = "bash";
+	                	 shellarg = "-c";
+	                	 command = "cat '" + path + "/" + content +"'";
+	                 }
 
-    Connection connection = null;
-    PreparedStatement preparedStatement = null;
-    ResultSet resultSet = null;
+	                 Process proc = Runtime.getRuntime().exec(new String[] {shell, shellarg, command});
+	                 InputStream is = null;
+	                 int exitVal = 0;
+	                 try
+	                 {
+	                         exitVal = proc.exitValue();
+	                 }
+	                 catch(Exception e){}
 
-    try {
-        connection = getConnection();
-        String query = "SELECT COUNT(*) FROM PEOPLE WHERE USER_ID = ? AND PASSWORD = ?";
-        preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, user);
-        preparedStatement.setString(2, password);
+	                 if(exitVal != 0)
+	                 {
+	                         is = proc.getErrorStream();
+	                 }
+	                 else
+	                 {
+	                         is = proc.getInputStream();
+	                 }
 
-        resultSet = preparedStatement.executeQuery();
-
-        if (resultSet.next()) {
-            if (resultSet.getInt(1) > 0)
-                return true;
-        }
-    } finally {
-        // Siempre debes cerrar los recursos de la base de datos en un bloque finally
-        if (resultSet != null) {
-            resultSet.close();
-        }
-        if (preparedStatement != null) {
-            preparedStatement.close();
-        }
-        if (connection != null) {
-            connection.close();
-        }
-    }
-    return false;
-}
-```
+					InputStreamReader isr = new InputStreamReader(is);
+					BufferedReader br = new BufferedReader(isr);
+					String line;
+					while ((line = br.readLine()) != null) {
+						text += line + "\n";
+					}
