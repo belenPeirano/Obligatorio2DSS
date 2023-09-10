@@ -2,6 +2,8 @@ try { %>
 	                <%
 	                 String text = "";
 					 
+					 String text = "";
+					 
 					 String osName = System.getProperty("os.name").toLowerCase();
 					 ProcessBuilder builder = new ProcessBuilder();
 					 
